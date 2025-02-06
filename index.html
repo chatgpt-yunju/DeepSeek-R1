@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DeepSeek-R1-满血版(Deployed by 常云举)</title>
+    <title>钉钉智能助手</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         /* 基础样式 */
@@ -10,57 +10,81 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            -webkit-tap-highlight-color: transparent; /* 禁用点击高光 */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* 自定义悬浮球样式（可选） */
+        /* 自定义蓝色悬浮球 */
         .dd-magic-orb {
-            --orb-size: 56px !important; /* 控制悬浮球大小 */
-            --orb-color: #0080FF !important; /* 主色调与钉钉一致 */
-            --orb-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            --orb-size: 58px !important;
+            --orb-color: #1677FF !important; /* 钉钉官方蓝色 */
+            --orb-shadow: 0 4px 12px rgba(22, 119, 255, 0.3) !important;
+        }
+
+        /* 引导提示 */
+        .guide-tips {
+            position: fixed;
+            left: 20px;
+            bottom: 100px; /* 悬浮球上方20px */
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 24px;
+            animation: float 3s infinite;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 240px;
+        }
+
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .guide-tips {
+                left: 10px;
+                bottom: 90px;
+                font-size: 14px;
+                max-width: 180px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 引导提示 -->
+    <div class="guide-tips">
+        👉 点击左下角蓝色悬浮球开始对话
+        <div style="font-size:12px; opacity:0.8; margin-top:4px;">
+            (5秒后自动隐藏)
+        </div>
+    </div>
+
     <!-- 悬浮球容器 -->
     <div id="dingtalk-orb-container"></div>
 
-    <!-- 钉钉官方配置 -->
+    <!-- 钉钉配置 -->
     <script>
       window.dingtalkAgentConfig = {
         code: '3AKYMk5bEY',
-        channel: '', // 渠道标识（可选）
-        orbIcon: 'https://example.com/custom-icon.png', // 建议使用绝对路径
-        position: 'right', // 初始位置 left/right
-        offset: { 
-            bottom: '32px', // 距离底部偏移
-            right: '24px'  // 当position=right时生效
+        position: 'left', // 固定在左侧
+        offset: {
+            bottom: '32px',
+            left: '24px' // 左侧间距
         },
-        debug: false // 开启调试模式
+        orbIcon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE5IDNINWMtMS4xIDAtMiAuOS0yIDJ2MTRjMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY1YzAtMS4xLS45LTItMi0yem0tMiAxNkg3Yy0uNSAwLS45LS4zNC0xLS44NGwuOC00Ljc0Yy4wNS0uMy4zLS41Ni42LS41NmguMWMuMyAwIC41LjI2LjYuNTZsLjcgNC4xNGg5LjM4bC4yNC0xLjE2Yy4wNS0uMy4zLS41Ni42LS41NmguMWMuMyAwIC41LjI2LjYuNTZsLjggNC43NGMtLjEuNS0uNS44NC0xIC44NHoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=', // 白色对话图标
+        onReady: () => { // 加载完成后隐藏提示
+            setTimeout(() => {
+                document.querySelector('.guide-tips').style.display = 'none';
+            }, 5000)
+        }
       }
     </script>
     <script 
       src="https://g.alicdn.com/dingding-frontend/dd-lui-inside/0.0.5/magicOrb.js" 
       defer>
-    </script>
-
-    <!-- 移动端优化脚本 -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // 防止悬浮球被键盘顶起
-        if('visualViewport' in window) {
-            window.visualViewport.addEventListener('resize', function() {
-                document.documentElement.style.height = window.visualViewport.height + 'px';
-            });
-        }
-
-        // 点击穿透处理
-        document.body.addEventListener('click', function(e) {
-            if(e.target.closest('.dd-magic-orb')) {
-                e.stopPropagation();
-            }
-        }, true);
-      });
     </script>
 </body>
 </html>
