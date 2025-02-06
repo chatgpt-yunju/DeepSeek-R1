@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DeepSeek-R1-满血版(deployed by 常云举)</title>
-    <meta name=="viewport" content=="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DeepSeek-R1-满血版(Deployed by 常云举)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         /* 基础样式 */
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden; /* 禁用全局滚动条 */
-            -webkit-overflow-scrolling: touch; /* 优化iOS滚动 */
-        }
-        
-        /* 主容器 */
-        .iframe-container {
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent; /* 禁用点击高光 */
         }
 
-        /* 移动端特定优化 */
-        @media screen and (max-width: 768px) {
-            iframe {
-                min-height: 100vh !important; /* 覆盖原有样式 */
-                transform: translateZ(0); /* 触发GPU加速优化滚动 */
-            }
+        /* 自定义悬浮球样式（可选） */
+        .dd-magic-orb {
+            --orb-size: 56px !important; /* 控制悬浮球大小 */
+            --orb-color: #0080FF !important; /* 主色调与钉钉一致 */
+            --orb-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
         }
     </style>
 </head>
 <body>
-    <div class="iframe-container">
-        <iframe
-            src="https://agent.dingtalk.com/copilot?code=3AKYMk5bEY"
-            style="width: 100%; height: 100%; min-height: 700px"
-            frameborder="0"
-            allow="microphone; fullscreen"  <!-- 添加全屏支持 -->
-            allowfullscreen>  <!-- 兼容旧版浏览器 -->
-        </iframe>
-    </div>
+    <!-- 悬浮球容器 -->
+    <div id="dingtalk-orb-container"></div>
 
-    <!-- 移动端点击延迟优化 -->
+    <!-- 钉钉官方配置 -->
     <script>
-        if('ontouchstart' in window) {
-            document.documentElement.style.cursor = 'pointer'; // 优化触摸反馈
-            FastClick.attach(document.body); // 若需彻底解决延迟可引入fastclick库
+      window.dingtalkAgentConfig = {
+        code: '3AKYMk5bEY',
+        channel: '', // 渠道标识（可选）
+        orbIcon: 'https://example.com/custom-icon.png', // 建议使用绝对路径
+        position: 'right', // 初始位置 left/right
+        offset: { 
+            bottom: '32px', // 距离底部偏移
+            right: '24px'  // 当position=right时生效
+        },
+        debug: false // 开启调试模式
+      }
+    </script>
+    <script 
+      src="https://g.alicdn.com/dingding-frontend/dd-lui-inside/0.0.5/magicOrb.js" 
+      defer>
+    </script>
+
+    <!-- 移动端优化脚本 -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // 防止悬浮球被键盘顶起
+        if('visualViewport' in window) {
+            window.visualViewport.addEventListener('resize', function() {
+                document.documentElement.style.height = window.visualViewport.height + 'px';
+            });
         }
+
+        // 点击穿透处理
+        document.body.addEventListener('click', function(e) {
+            if(e.target.closest('.dd-magic-orb')) {
+                e.stopPropagation();
+            }
+        }, true);
+      });
     </script>
 </body>
 </html>
